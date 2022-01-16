@@ -8,8 +8,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "preinstall": "rm -rf node_modules",
-    "postinstall": "rm -rf node_modules/react-native-html-view/example"
+    "preinstall": "rm -rf ./ios/Pods && rm -rf ./android/app/build",
+    "postinstall": "rm -rf ./node_modules/react-native-html-view/example"
   },
   "dependencies": {
     "react": "17.0.2",
