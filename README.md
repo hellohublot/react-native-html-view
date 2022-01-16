@@ -10,6 +10,7 @@ yarn add 'https://github.com/hellohublot/react-native-html-view.git'
 
 ```javascript
 import HtmlView from 'react-native-html-view'
+
 <HTHtmlView 
 	style={styleList.htmlView}
 	value={`
