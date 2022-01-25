@@ -25,14 +25,21 @@ public class HTImageHandler extends ImageHandler {
         builder.append("\uFFFC");
 
         Bitmap bitmap = loadBitmap(src);
-        String widthString = node.getAttributeByName("width");
-        int width = bitmap.getWidth() - 1;
-        int height = bitmap.getHeight() - 1;
-        if (widthString != null && widthString.endsWith("pt")) {
-            int reloadWidth = (int)Double.parseDouble(widthString.substring(0, widthString.length() - 2));
-            reloadWidth = (int) PixelUtil.toPixelFromDIP(reloadWidth);
-            height = height * reloadWidth / width;
-        	width = reloadWidth;
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        Integer readStyleWidth = readStyleScale(node, "width");
+        Integer readStyleHeight = readStyleScale(node, "height");
+        if (readStyleWidth != null && readStyleHeight != null) {
+            width = readStyleWidth;
+            height = readStyleHeight;
+        } else if (readStyleWidth != null) {
+            height = readStyleWidth * height / width;
+            width = readStyleWidth;
+        } else if (readStyleHeight != null) {
+            width = readStyleHeight * width / height;
+            height = readStyleHeight;
+        }
+        if (readStyleWidth != null || readStyleHeight != null) {
             bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
         }
 
@@ -44,6 +51,18 @@ public class HTImageHandler extends ImageHandler {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
+    }
+
+    private Integer readStyleScale(TagNode node, String attributedName) {
+        String scaleString = node.getAttributeByName(attributedName);
+        if (scaleString == null) {
+            return null;
+        }
+        int reloadScale = (int)Double.parseDouble(scaleString.substring(0, scaleString.length() - 2));
+        if (scaleString.endsWith("pt")) {
+            reloadScale = (int) PixelUtil.toPixelFromDIP(reloadScale);
+        }
+        return reloadScale;
     }
 
     protected Bitmap loadBitmap(String url) {
